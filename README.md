@@ -265,7 +265,7 @@ Sistema de login y registro con ASP.NET Identity.
 ## Autor
 
 - GitHub: [@Brayanj732](https://github.com/Brayanj732)
-- LinkedIn: [Tu Perfil](https://www.linkedin.com/in/brayanjimenezdev)
+- LinkedIn: [Brayan Jimenez](https://www.linkedin.com/in/brayanjimenezdev)
 - Email: brayanjimenezdev@outlook.com
 
 ## Licencia
