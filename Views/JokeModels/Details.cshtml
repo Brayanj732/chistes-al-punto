@@ -1,0 +1,116 @@
+﻿@model JokesAppByMe.Models.JokeModel
+
+@{
+    ViewData["Title"] = "Detalle del Chiste";
+}
+<div class="jokes-page jokes-details">
+
+<div class="details-container">
+    <div class="joke-detail-card">
+                    @*HEADER: Categoría y botones de acción*@
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <span class="category-badge-large">@Model.Categoria</span>
+            <div class="text-end">
+                @* Botones de editar/borrar - solo visibles para el creador *@
+                @if (User.Identity?.IsAuthenticated == true && Model.CreadoPor == User.Identity?.Name)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="edit-button me-2">
+                         Editar
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-action btn-danger-custom">
+                        Borrar
+                    </a>
+                }
+                @* Botón para volver al índice *@
+                <a asp-action="Index" class="back-button">
+                    ← Volver
+                </a>
+
+            </div>
+        </div>
+                    @* PREGUNTA DEL CHISTE*@
+        <div class="question-section">
+            <h6 class="text-uppercase fw-bold mb-3" style="color: var(--primary); letter-spacing: 1px;">
+                Pregunta
+            </h6>
+            <h2 class="fw-bold mb-0">@Model.PreguntaChiste</h2>
+        </div>
+                    @* RESPUESTA DEL CHISTE*@
+        <div class="answer-section">
+            <h6 class="text-uppercase fw-bold mb-3" style="color: var(--secondary); letter-spacing: 1px;">
+                Respuesta
+            </h6>
+            <h3 class="mb-0">@Model.RespuestaChiste</h3>
+        </div>
+
+        <!-- Stats Grid,  Muestra vistas, likes, dislikes y rating -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">👁️</div>
+                <span class="value">@Model.Vistas</span>
+                <div class="label">Vistas</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">👍</div>
+                <span class="value" id="likesCount">@Model.Likes</span>
+                <div class="label">Me Gusta</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">👎</div>
+                <span class="value" id="dislikesCount">@Model.Dislikes</span>
+                <div class="label">No Me Gusta</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">⭐</div>
+                <span class="value" id="ratingValue">@Model.RatingPromedio.ToString("F1")</span>
+                <div class="label">Rating (@Model.TotalRatings votos)</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons, Like/Dislike Solo funcionales para usuarios autenticados -->
+        <div class="action-buttons">
+            <button onclick="likeJoke(@Model.Id)" class="btn-action btn-like">
+                👍 Me hizo reír
+            </button>
+            <button onclick="dislikeJoke(@Model.Id)" class="btn-action btn-dislike">
+                👎 Fue malísimo
+            </button>
+        </div>
+
+        <!-- Rating Section POR ESTRELLAS Permite calificar de 1 a 5 estrellas -->
+        <div class="rating-section">
+            <h4 class="fw-bold mb-3" style="color: var(--primary);">¿Qué te pareció este chiste?</h4>
+            <p class="text-muted mb-3">Danos tu valoración</p>
+            @* Sistema de estrellas clickeables *@
+            <div class="star-rating" id="starRating" data-current-rating="@Model.RatingPromedio">
+                <span class="star" data-rating="1" onclick="rateJoke(@Model.Id, 1)">★</span>
+                <span class="star" data-rating="2" onclick="rateJoke(@Model.Id, 2)">★</span>
+                <span class="star" data-rating="3" onclick="rateJoke(@Model.Id, 3)">★</span>
+                <span class="star" data-rating="4" onclick="rateJoke(@Model.Id, 4)">★</span>
+                <span class="star" data-rating="5" onclick="rateJoke(@Model.Id, 5)">★</span>
+            </div>
+        </div>
+
+        <!-- Metadata, Autor y fecha de creación -->
+        <div class="metadata">
+            <div>
+                <small class="text-muted d-block">Creado por</small>
+                <strong style="color: var(--primary);">👤 @(Model.CreadoPor ?? "Anónimo")</strong>
+            </div>
+            <div class="text-end">
+                <small class="text-muted d-block">Fecha de creación</small>
+                <strong style="color: var(--primary);">📅 @Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</strong>
+            </div>
+        </div>
+    </div>
+</div>
+@* Token antiforgery para peticiones AJAX *@
+@Html.AntiForgeryToken()
+</div>
+
+@section Scripts {
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/jokes-details.js" asp-append-version="true"></script>
+}
+
+

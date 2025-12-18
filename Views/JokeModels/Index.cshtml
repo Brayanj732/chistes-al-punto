@@ -1,0 +1,281 @@
+﻿@model IEnumerable<JokesAppByMe.Models.JokeModel>
+
+@{
+    ViewData["Title"] = "Chistes";
+}
+
+
+<!-- Hero Section, Encabezado principal con título y botones de acción -->
+<div class="hero-section">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h1><i class="bi bi-emoji-laughing me-2"></i> Chistes al Punto</h1>
+            <p class="lead mb-0">Encuentra los mejores chistes y comparte los tuyos</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+            @* Botón para ver un chiste aleatorio *@
+            <a asp-action="Random" class="btn btn-light btn-lg me-2">
+                <i class="bi bi-shuffle me-1"></i> Sorpréndeme
+            </a>
+             @* Botón para crear un nuevo chiste *@
+            <a asp-action="Create" class="btn btn-light btn-lg">
+                <i class="bi bi-plus-circle me-1"></i> Publicar chiste
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Bar, Búsqueda, filtrado por categoría y ordenamiento-->
+<div class="filter-bar">
+    <form asp-action="Index" method="get">
+        <div class="row g-3">
+             @* Campo de búsqueda por texto *@
+            <div class="col-md-4">
+                <label class="form-label fw-bold"><i class="bi bi-search"></i> Buscar</label>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" 
+                       class="form-control filter-select" placeholder="Buscar chistes...">
+            </div>
+             @* Filtro por categoría *@
+            <div class="col-md-3">
+                <label class="form-label fw-bold"><i class="bi bi-tags me-1"></i>
+                    Filtrar por categoría</label>
+                <select name="categoria" class="form-select filter-select">
+                    <option value="">Todas</option>
+                    @foreach (var cat in ViewBag.Categories)
+                    {
+                        @* Mantener la categoría seleccionada después del submit *@
+                        <option value="@cat" selected="@(cat == ViewData["CurrentCategory"])">@cat</option>
+                    }
+                </select>
+            </div>
+
+                @* Ordenamiento *@
+            <div class="col-md-3">
+                <label class="form-label fw-bold"><i class="bi bi-sort-down me-1"></i>Ordenar por</label>
+                <select name="sortOrder" class="form-select filter-select">
+                    <option value="">Recientes</option>
+                    <option value="Popular">Más votados</option>
+                    <option value="Rating">Mejor calificados</option>
+                    <option value="Date">Antiguos</option>
+                </select>
+            </div>
+
+                @* Botón para aplicar filtros *@
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary-custom w-100">
+                    Filtrar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Stats Bar, Muestra totales globales de chistes, likes y rating-->
+<div class="mb-4 text-center">
+    <span class="stat-item me-2">
+        <span style="color: var(--primary);"><i class="bi bi-journal-text me-1"></i>
+</span> 
+        <strong>@Model.Count()</strong> chistes
+    </span>
+    <span class="stat-item me-2">
+        <span style="color: #EA5A47;"><i class="bi bi-heart-fill me-1"></i></span>
+        <strong>@Model.Sum(j => j.Likes)</strong> likes
+    </span>
+    <span class="stat-item">
+        <span style="color: #FCD34D;"><i class="bi bi-star-fill me-1"></i></span>
+        <strong>@(Model.Any() ? Model.Average(j => j.RatingPromedio).ToString("F1") : "0.0")</strong> rating
+    </span>
+</div>
+
+<!-- Jokes Grid, Muestra las tarjetas de chistes en layout responsive -->
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var joke in Model)
+        {
+            <div class="col-lg-6 col-xl-4">
+                <div class="joke-card">
+                        @* Header de la tarjeta: categoría y metadatos *@
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="category-badge">@joke.Categoria</span>
+                        <div class="text-end">
+                            <small class="text-muted d-block">
+                                <strong>👁️ @joke.Vistas</strong> visitas
+                            </small>
+                            <small class="text-muted">
+                                @joke.FechaCreacion.ToString("dd/MM/yyyy")
+                            </small>
+                        </div>
+                    </div>
+                        @* Pregunta del chiste *@
+                    <h5 class="fw-bold mb-3" style="color: var(--primary); min-height: 50px;">
+                        @joke.PreguntaChiste
+                    </h5>
+                    @* Respuesta del chiste *@
+                    <p class="text-muted mb-3" style="min-height: 60px;">
+                        @joke.RespuestaChiste
+                    </p>
+                    @* Footer de la tarjeta: interacciones y autor *@
+                    <div class="border-top pt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            @* Botones de like/dislike *@
+                            <div>
+                                <button onclick="likeJoke(@joke.Id)" class="btn btn-sm action-button me-1">
+                                    👍 <span id="likes-@joke.Id">@joke.Likes</span>
+                                </button>
+                                <button onclick="dislikeJoke(@joke.Id)" class="btn btn-sm action-button">
+                                    👎 <span id="dislikes-@joke.Id">@joke.Dislikes</span>
+                                </button>
+                            </div>
+                              @* Rating con estrellas *@
+                            <div class="rating-stars">
+                                <i class="bi bi-star-fill star-yellow me-2"></i><strong id="rating-@joke.Id">@joke.RatingPromedio.ToString("F1")</strong>
+                                <small class="text-muted">(@joke.TotalRatings)</small>
+                            </div>
+                        </div>
+                            @* Autor del chiste (muestra solo username sin @dominio) *@
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                 @{
+                                            var autor = joke.CreadoPor ?? "";
+                                            var autorCorto = autor.Contains("@")
+                                                ? autor.Split('@')[0]
+                                                : autor;
+                                        }
+
+                                        <span class="author-text">
+                                            <i class="bi bi-person-circle me-1"></i>@autorCorto
+                                        </span>
+                            </small>
+                            @* Botón para ver detalles completos *@
+                            <div>
+                                <a asp-action="Details" asp-route-id="@joke.Id" class="action-button btn-sm">
+                                    Ver más
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    @* Estado vacío: cuando no hay chistes que mostrar *@
+    <div class="empty-state">
+       <h3 class="empty-title"><i class="bi bi-emoji-neutral-fill emoji-neutral me-2"></i>No encontré nada con esos filtros</h3>
+        <p class="text-muted mb-4">Prueba otra palabra, cambia la categoría… o sé el primero en soltar uno bueno.</p>
+        <a asp-action="Create" class="btn btn-primary-custom">
+            <i class="bi bi-plus-circle me-1"></i> Publicar el primero
+        </a>
+    </div>
+}
+<!-- Paginación Manual, Solo se muestra si hay más de una página -->
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="pagination-container">
+         @* Información de paginación: "Mostrando X - Y de Z chistes" *@
+        <div class="pagination-info">
+            <span class="text-muted">
+                Mostrando 
+                <strong>@((ViewBag.CurrentPage - 1) * 12 + 1)</strong> 
+                - 
+                <strong>@Math.Min(ViewBag.CurrentPage * 12, ViewBag.TotalJokes)</strong> 
+                de 
+                <strong>@ViewBag.TotalJokes</strong> chistes
+            </span>
+        </div>
+
+        <nav aria-label="Paginación de chistes">
+            <ul class="pagination justify-content-center">
+                @* Botón "Primera" - solo visible si no estamos en página 1 *@
+                <!-- Botón Primera -->
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="1"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-categoria="@ViewData["CurrentCategory"]"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]">
+                            Primera
+                        </a>
+                    </li>
+                }
+
+                @* Botón "Anterior" *@
+                @if (ViewBag.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="@(ViewBag.CurrentPage - 1)"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-categoria="@ViewData["CurrentCategory"]"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]">
+                            ← Anterior
+                        </a>
+                    </li>
+                }
+
+                @* Números de página (muestra 5: actual ±2) *@
+                @{
+                    int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                    int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="@i"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-categoria="@ViewData["CurrentCategory"]"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                @* Botón "Siguiente" *@
+                @if (ViewBag.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="@(ViewBag.CurrentPage + 1)"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-categoria="@ViewData["CurrentCategory"]"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]">
+                            Siguiente →
+                        </a>
+                    </li>
+                }
+
+                <!-- Botón Última -->
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" 
+                           asp-action="Index" 
+                           asp-route-page="@ViewBag.TotalPages"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-categoria="@ViewData["CurrentCategory"]"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]">
+                            Última
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+}
+@* Token antiforgery para peticiones AJAX (likes/dislikes) *@
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script src="~/js/site.js" asp-append-version="true"></script>
+}

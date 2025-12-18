@@ -1,0 +1,82 @@
+﻿@model JokesAppByMe.Models.JokeModel
+
+@{
+    ViewData["Title"] = "Crear Nuevo Chiste";
+}
+<div class="jokes-page jokes-create">
+
+
+<div class="create-container">
+            @* HEADER DEL FORMULARIO*@
+    <div class="header-section">
+        <div class="emoji-icon">😂</div>
+        <h1 class="fw-bold mb-2">Publicar chiste</h1>
+        <p class="mb-0">Si da risa, va. Si da pena… también</p>
+    </div>
+
+    <div class="create-card">
+        @* TIPS PARA CREAR UN BUEN CHISTE*@
+        <div class="tips-box">
+            <h6>💡 Checklist anti-chiste flojo:</h6>
+            <ul>
+                <li>Sé original y creativo</li>
+                <li>Corto y al grano</li>
+                <li>Remate fuerte</li>
+                <li>Elige la categoría correcta</li>
+            </ul>
+        </div>
+        @* FORMULARIO DE CREACION*@
+        <form asp-action="Create" method="post">
+            @* Mostrar errores de validación *@
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+             @* Campo: Categoría *@
+            <div class="mb-4">
+                <label asp-for="Categoria" class="form-label">📂 Categoría del chiste</label>
+                <select asp-for="Categoria" class="form-select" asp-items="ViewBag.Categories">
+                    <option value="">Selecciona una categoría</option>
+                </select>
+                <span asp-validation-for="Categoria" class="text-danger"></span>
+            </div>
+            @* Campo: Pregunta (máx 500 caracteres) *@
+            <div class="mb-4">
+                <label asp-for="PreguntaChiste" class="form-label">❓ Pregunta del Chiste</label>
+                <textarea asp-for="PreguntaChiste" class="form-control" rows="3" 
+                          placeholder="¿Por qué los programadores prefieren el dark mode?"
+                          maxlength="500" id="preguntaInput"></textarea>
+                <div class="char-counter">
+                    <span id="preguntaCount">0</span> / 500 caracteres
+                </div>
+                <span asp-validation-for="PreguntaChiste" class="text-danger"></span>
+            </div>
+            @* Campo: Respuesta (máx 1000 caracteres) *@
+            <div class="mb-4">
+                <label asp-for="RespuestaChiste" class="form-label">💡 Respuesta del Chiste</label>
+                <textarea asp-for="RespuestaChiste" class="form-control" rows="4" 
+                          placeholder="¡Porque la luz atrae bugs! 🐛"
+                          maxlength="1000" id="respuestaInput"></textarea>
+                @* Contador de caracteres en tiempo real *@
+                <div class="char-counter">
+                    <span id="respuestaCount">0</span> / 1000 caracteres
+                </div>
+                <span asp-validation-for="RespuestaChiste" class="text-danger"></span>
+            </div>
+             @* Botones de acción *@
+            <div class="d-grid gap-3 mt-4">
+                <button type="submit" class="btn btn-create">
+                    Publicar
+                </button>
+                <a asp-action="Index" class="btn-back text-center">
+                    ← Volver
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    @* Validación del lado del cliente *@
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @* Script para contadores de caracteres *@
+    <script src="~/js/jokes-create.js" asp-append-version="true"></script>
+}

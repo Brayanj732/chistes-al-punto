@@ -1,0 +1,109 @@
+﻿@model JokesAppByMe.Models.JokeModel
+
+@{
+    ViewData["Title"] = "Eliminar Chiste";
+}
+
+<div class="jokes-page jokes-delete">
+    <div class="create-container">
+                @* HEADER DE ADVERTENCIA, Estilo rojo para indicar acción destructiva*@
+        <div class="header-section">
+            <h1 class="fw-bold mb-2"> Eliminar chiste</h1>
+            <p class="mb-0">⚠️ Esta acción no se puede deshacer</p>
+        </div>
+
+        <div class="create-card">
+            @*ADVERTENCIAS CRÍTICAS,Lista de todo lo que se perderá al eliminar*@
+            <div class="tips-box">
+                <h6>🚨 ¿Seguro que quieres borrar esto?</h6>
+                <ul>
+                    <li>Se perderán todos los likes y dislikes</li>
+                    <li>Se eliminarán todas las calificaciones</li>
+                    <li>El contador de visitas se perderá</li>
+                    <li><strong>Esta acción es permanente</strong></li>
+                </ul>
+            </div>
+
+            <!-- Vista previa del chiste, Muestra toda la información del chiste antes de eliminarlo para que el usuario pueda confirmar que es el correcto -->
+            <div class="joke-preview-card">
+                @* Header: Categoría y metadatos *@
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <span class="category-badge-large">@Model.Categoria</span>
+                    <div class="text-end">
+                        <small class="text-muted d-block">
+                            👁️ <strong>@Model.Vistas</strong> visitas
+                        </small>
+                        <small class="text-muted">
+                            📅 @Model.FechaCreacion.ToString("dd/MM/yyyy")
+                        </small>
+                    </div>
+                </div>
+                @* Pregunta del chiste *@
+                <div class="mb-4">
+                    <h6 class="text-uppercase fw-bold mb-2 preview-question">
+                        ❓ Pregunta
+                    </h6>
+                    <p class="fw-bold mb-0 preview-question-text">
+                        @Model.PreguntaChiste
+                    </p>
+                </div>
+                 @* Respuesta del chiste *@
+                <div class="mb-4">
+                    <h6 class="text-uppercase fw-bold mb-2 preview-answer">
+                        💡 Respuesta
+                    </h6>
+                    <p class="mb-0 preview-answer-text">
+                        @Model.RespuestaChiste
+                    </p>
+                </div>
+
+                <!-- Estadísticas QUE SE PERDERÁN, Muestra visualmente lo que el usuario está a punto de eliminar -->
+                <div class="stats-mini">
+                    <div class="stat-mini">
+                        <div class="icon">👍</div>
+                        <span class="value">@Model.Likes</span>
+                        <span class="label">Likes</span>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="icon">👎</div>
+                        <span class="value">@Model.Dislikes</span>
+                        <span class="label">Dislikes</span>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="icon">⭐</div>
+                        <span class="value">@Model.RatingPromedio.ToString("F1")</span>
+                        <span class="label">Rating</span>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="icon">📊</div>
+                        <span class="value">@Model.TotalRatings</span>
+                        <span class="label">Votos</span>
+                    </div>
+                </div>
+                @* Información del creador *@
+                <div class="metadata mt-3 pt-3 border-top">
+                    <small class="text-muted">
+                        👤 Creado por <strong>@(Model.CreadoPor ?? "Anónimo")</strong>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Formulario de eliminación, POST request para confirmar la eliminación -->
+            <form asp-action="Delete" method="post">
+                @* Campo oculto con el ID del chiste a eliminar *@
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="d-grid gap-3 mt-4">
+                    @* Botón de confirmación (rojo, destructivo) *@
+                    <button type="submit" class="btn btn-danger-custom">
+                         Sí, eliminar permanentemente
+                    </button>
+                    @* Botón de cancelación (vuelve a Details) *@
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary text-center">
+                        ← No, mantener este chiste
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

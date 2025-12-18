@@ -1,0 +1,73 @@
+﻿@model JokesAppByMe.Models.JokeModel
+@{
+    ViewData["Title"] = "Editar Chiste";
+}
+
+<div class="jokes-page jokes-edit">
+    <div class="create-container">
+                @* HEADER DEL FORMULARIO DE EDICIÓN*@
+        <div class="header-section">
+            <h1 class="fw-bold mb-2"> Editar chiste</h1>
+            <p class="mb-0">Mejora tu chiste o corrige lo que no quedó bien</p>
+        </div>
+
+        <div class="create-card">
+               @*ADVERTENCIA: Cambios afectan estadísticas*@
+            <div class="tips-box">
+                <h6>⚠️ Recuerda:</h6>
+                <ul>
+                    <li>Los cambios afectarán las estadísticas existentes</li>
+                    <li>Mantén la esencia del chiste original</li>
+                    <li>Revisa ortografía y puntuación</li>
+                </ul>
+            </div>
+                        @*FORMULARIO DE EDICIÓN,Solo permite editar: categoría, pregunta y respuesta. Mantiene: likes, dislikes, vistas, ratings, autor, fecha*@
+            <form asp-action="Edit" method="post">
+                @* Campo oculto con el ID del chiste *@
+                <input type="hidden" asp-for="Id" />
+                 @* Mostrar errores de validación *@
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                @* Campo: Categoría (con valor actual preseleccionado) *@
+                <div class="mb-4">
+                    <label asp-for="Categoria" class="form-label">📂 Categoría del chiste</label>
+                    <select asp-for="Categoria" class="form-select" asp-items="ViewBag.Categories">
+                        <option value="">Selecciona una categoría</option>
+                    </select>
+                    <span asp-validation-for="Categoria" class="text-danger"></span>
+                </div>
+                @* Campo: Pregunta (máx 500 caracteres) *@
+                <div class="mb-4">
+                    <label asp-for="PreguntaChiste" class="form-label">❓ Pregunta del Chiste</label>
+                    <textarea asp-for="PreguntaChiste" class="form-control" rows="3" 
+                              placeholder="¿Por qué los programadores prefieren el dark mode?"
+                              maxlength="500"></textarea>
+                    <span asp-validation-for="PreguntaChiste" class="text-danger"></span>
+                </div>
+                @* Campo: Respuesta (máx 1000 caracteres) *@
+                <div class="mb-4">
+                    <label asp-for="RespuestaChiste" class="form-label">💡 Respuesta del Chiste</label>
+                    <textarea asp-for="RespuestaChiste" class="form-control" rows="4" 
+                              placeholder="¡Porque la luz atrae bugs!"
+                              maxlength="1000"></textarea>
+                    <span asp-validation-for="RespuestaChiste" class="text-danger"></span>
+                </div>
+                @* Botones de acción *@
+                <div class="d-grid gap-3 mt-4">
+                    @* Botón para guardar cambios *@
+                    <button type="submit" class="btn btn-primary">
+                         Guardar cambios
+                    </button>
+                    @* Botón para cancelar y volver a Details *@
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary text-center">
+                        ← Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* Validación del lado del cliente *@
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

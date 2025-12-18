@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Chistes al Punto</title>
+        @*StylesSheets*@
+        @* Bootstrap CSS *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @* Estilos generales del sitio *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* Estilos específicos para las páginas de chistes *@
+    <link rel="stylesheet" href="~/css/jokes.css" asp-append-version="true" />
+    @* Estilos compilados de Razor (generados automáticamente) *@
+    <link rel="stylesheet" href="~/JokesAppByMe.styles.css" asp-append-version="true" />
+    @* Bootstrap Icons CDN *@
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+<body>
+        @* NAVBAR: Barra de navegación principal*@
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                @* Logo/Brand - redirige al índice de chistes *@
+                <a class="navbar-brand" asp-area="" asp-controller="JokeModels" asp-action="Index">Chistes al Punto</a>
+                @* Botón hamburguesa para móviles *@
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    @* MENÚ DE NAVEGACIÓN PRINCIPAL*@
+                    <ul class="navbar-nav flex-grow-1">
+                         @* Link: Ver todos los chistes *@
+                            <li class="nav-item">
+                               <a class="nav-link text-dark" asp-controller="JokeModels" asp-action="Index">
+                                    Chistes
+                                </a>
+                            </li>
+                            @* Link: Chiste aleatorio *@
+                            <li class="nav-item">
+                                 <a class="nav-link text-dark" asp-controller="JokeModels" asp-action="Random">
+                                      Aleatorio
+                                 </a>
+                             </li>
+                             @* Link: Crear nuevo chiste (requiere autenticación) *@
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="JokeModels" asp-action="Create">
+                                    Crear
+                                </a>
+                            </li>
+                    </ul>
+                        @*MENÚ DE USUARIO (Login/Logout) Partial view generado por Identity*@
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+        @* CONTENIDO PRINCIPAL, Aquí se renderiza el contenido de cada vista*@
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+            @*FOOTER*@
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 Chistes al Punto 
+        </div>
+    </footer>
+    @*SCRIPTS*@
+    @* jQuery (requerido por Bootstrap) *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @* Bootstrap JavaScript (incluye Popper.js) *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @* Scripts generales del sitio *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* Script para likes/dislikes en Index *@
+    <script src="~/js/jokes-index.js" asp-append-version="true"></script>
+    @* Sección opcional de scripts,Las vistas individuales pueden agregar sus propios scripts aquí.Ejemplo: Details.cshtml agrega jokes-details.js*@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
