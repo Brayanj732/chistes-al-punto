@@ -29,6 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="assets\gifs-extra\" />
+    <Folder Include="assets\gifs\" />
     <Folder Include="screenshots\" />
   </ItemGroup>
 

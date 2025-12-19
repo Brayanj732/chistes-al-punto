@@ -90,20 +90,21 @@
 
             <!-- Formulario de eliminación, POST request para confirmar la eliminación -->
             <form asp-action="Delete" method="post">
-                @* Campo oculto con el ID del chiste a eliminar *@
+                @Html.AntiForgeryToken()
+
                 <input type="hidden" asp-for="Id" />
-                
+
                 <div class="d-grid gap-3 mt-4">
-                    @* Botón de confirmación (rojo, destructivo) *@
                     <button type="submit" class="btn btn-danger-custom">
-                         Sí, eliminar permanentemente
+                        Sí, eliminar permanentemente
                     </button>
-                    @* Botón de cancelación (vuelve a Details) *@
+
                     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary text-center">
                         ← No, mantener este chiste
                     </a>
                 </div>
             </form>
+
         </div>
     </div>
 </div>

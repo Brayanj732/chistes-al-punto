@@ -456,7 +456,8 @@ namespace JokesAppByMe.Controllers
         /// Se pierden todos los likes, ratings y vistas asociados
         /// </summary>
         /// <param name="id">ID del chiste</param>
-        /// <returns>Redirecciona al índice</returns>        [HttpPost, ActionName("Delete")]
+        /// <returns>Redirecciona al índice</returns>
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

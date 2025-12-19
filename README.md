@@ -6,7 +6,25 @@ Una aplicación web interactiva para compartir y calificar chistes, construida c
 ![C#](https://img.shields.io/badge/C%23-239120?logo=csharp)
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoftsqlserver)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?logo=bootstrap)
+##  Video Demo Completo
 
+[![Ver demo completa en YouTube](https://img.youtube.com/vi/rhyJZhfnM2U/maxresdefault.jpg)](https://youtu.be/rhyJZhfnM2U)
+
+**👉 [Ver demo completa en YouTube (1:55 min)](https://youtu.be/rhyJZhfnM2U)**
+
+##  Vista Rápida
+
+### Explorar Chistes - Sistema de Votación y Búsqueda
+![Index Demo](assets/gifs/index-demo.gif.gif)
+
+###  Autenticación y Sistema de Likes
+![Auth Like Demo](assets/gifs/auth-like-demo.gif.gif)
+
+### Detalles - Likes, Dislikes y Rating por Estrellas
+![Details Rating Demo](assets/gifs/details-rating-demo.gif.gif)
+
+### Crear Nuevo Chiste
+![Create Demo](assets/gifs/create-demo.gif.gif)
 
 ## Características
 
